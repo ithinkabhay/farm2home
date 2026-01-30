@@ -9,7 +9,7 @@ Farmers are often forced to sell grains at very low prices to middlemen due to
 lack of direct access to buyers, storage pressure, and market compulsion.
 
 ## Vision
-- Give farmers fair value for their मेहनत
+- Give farmers fair value for their **hard work**.
 - Provide customers pure, non-adulterated grains
 - Build a transparent, respectful system for agriculture trade
 
