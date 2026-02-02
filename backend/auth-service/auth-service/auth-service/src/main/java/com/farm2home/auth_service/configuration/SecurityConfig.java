@@ -13,7 +13,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)   // 🔥 THIS FIXES 403 ON POST
+                .csrf(AbstractHttpConfigurer::disable)  
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth/login")
                         .permitAll()
