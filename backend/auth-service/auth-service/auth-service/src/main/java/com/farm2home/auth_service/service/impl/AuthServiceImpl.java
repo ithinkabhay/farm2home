@@ -6,6 +6,7 @@ import com.farm2home.auth_service.entity.Role;
 import com.farm2home.auth_service.entity.User;
 import com.farm2home.auth_service.repository.UserRepository;
 import com.farm2home.auth_service.service.AuthService;
+import com.farm2home.auth_service.util.JwtUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,12 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -34,13 +37,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User login(LoginRequest request) {
+    public String login(LoginRequest request) {
         User user = userRepository.findByMobile(request.getMobile())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!bCryptPasswordEncoder.matches(request.getPassword(), user.getPassword())){
             throw new RuntimeException("Invalid credentials");
         }
-        return user;
+        return jwtUtil.generateToken(user.getId(), user.getRole().name());
     }
 }
