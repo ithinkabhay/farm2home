@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- ✅ CHANGED: Downgraded to STABLE Spring Boot version
+         (Spring Boot 4.x is too new & unstable for Gateway) -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.2.2</version>
+		<relativePath/>
+	</parent>
+
+	<groupId>com.farm2home</groupId>
+	<artifactId>api-gateway</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>api-gateway</name>
+	<description>API Gateway for Farm2Home microservices</description>
+
+	<properties>
+		<java.version>21</java.version>
+
+		<!-- ✅ CHANGED: Stable Spring Cloud version compatible with Boot 3.2.x -->
+		<spring-cloud.version>2023.0.1</spring-cloud.version>
+	</properties>
+
+	<dependencies>
+
+		<!-- ✅ CHANGED: CORRECT dependency for Spring Cloud Gateway
+             - Reactive (WebFlux)
+             - Uses Netty
+             - REQUIRED for API Gateway -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-gateway</artifactId>
+		</dependency>
+
+		<!-- ✅ Actuator (health checks, useful later for monitoring) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- ❌ REMOVED:
+             spring-cloud-starter-gateway-server-webmvc
+             spring-boot-starter-web
+             (Gateway must be REACTIVE, not MVC) -->
+
+		<!-- Test dependency -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<!-- ✅ REQUIRED: Spring Cloud BOM for version alignment -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<!-- Spring Boot plugin -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
