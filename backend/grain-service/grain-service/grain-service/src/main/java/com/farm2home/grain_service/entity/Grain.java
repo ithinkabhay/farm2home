@@ -38,6 +38,11 @@ public class Grain {
 
     private LocalDateTime createdAt;
 
+    private String imageUrl;
+
+    private String videoUrl;
+
+
     @PrePersist
     void onCreate() {
         this.createdAt = LocalDateTime.now();
