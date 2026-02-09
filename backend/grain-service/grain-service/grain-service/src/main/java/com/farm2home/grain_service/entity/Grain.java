@@ -38,9 +38,10 @@ public class Grain {
 
     private LocalDateTime createdAt;
 
-    private String imageUrl;
+    private String imageKey;
 
-    private String videoUrl;
+    private String videoKey;
+
 
 
     @PrePersist

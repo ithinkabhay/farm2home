@@ -13,30 +13,38 @@ public class GrainMediaController {
     private final S3FileService s3FileService;
     private final GrainRepository grainRepository;
 
-    public GrainMediaController(S3FileService s3FileService, GrainRepository grainRepository) {
+    public GrainMediaController(S3FileService s3FileService,
+                                GrainRepository grainRepository) {
         this.s3FileService = s3FileService;
         this.grainRepository = grainRepository;
     }
 
-    @PostMapping("/{grainId}/upload")
+    @PostMapping(
+            value = "/{grainId}/upload",
+            consumes = "multipart/form-data"
+    )
     public ResponseEntity<?> uploadMedia(
             @PathVariable Long grainId,
             @RequestPart("file") MultipartFile file,
-            @RequestParam(defaultValue = "IMAGE") String type    ) {
+            @RequestParam(defaultValue = "IMAGE") String type
+    ) {
 
         var grain = grainRepository.findById(grainId)
                 .orElseThrow(() -> new RuntimeException("Grain not found"));
 
-        String url = s3FileService.uploadFile(file);
+        // upload to S3 → returns ONLY KEY
+        String key = s3FileService.uploadFile(file);
 
         if ("IMAGE".equalsIgnoreCase(type)) {
-            grain.setImageUrl(url);
+            grain.setImageKey(key);
         } else if ("VIDEO".equalsIgnoreCase(type)) {
-            grain.setVideoUrl(url);
+            grain.setVideoKey(key);
+        } else {
+            return ResponseEntity.badRequest().body("Invalid media type");
         }
 
         grainRepository.save(grain);
 
-        return ResponseEntity.ok(url);
+        return ResponseEntity.ok("Media uploaded successfully");
     }
 }
