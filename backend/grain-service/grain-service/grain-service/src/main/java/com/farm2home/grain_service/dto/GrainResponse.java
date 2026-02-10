@@ -14,4 +14,7 @@ public class GrainResponse {
     private Double pricePerKg;
     private String harvestSeason;
     private boolean available;
+    private String imageUrl;
+    private String videoUrl;
+
 }

@@ -67,6 +67,7 @@ public class S3FileServiceImpl implements S3FileService {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
+                .responseContentDisposition("inline")
                 .build();
 
         GetObjectPresignRequest presignRequest =

@@ -27,6 +27,7 @@ public class GrainController {
             @RequestHeader("X-USER-ROLE") String role,
             @Valid @RequestBody GrainRequest request
     ) {
+        System.out.println(">>> Grain Service HIT");
         if (!"FARMER".equals(role)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

@@ -5,6 +5,7 @@ import com.farm2home.grain_service.dto.GrainResponse;
 import com.farm2home.grain_service.entity.Grain;
 import com.farm2home.grain_service.repository.GrainRepository;
 import com.farm2home.grain_service.service.GrainService;
+import com.farm2home.grain_service.service.S3FileService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +14,11 @@ import java.util.List;
 public class GrainServiceImpl implements GrainService {
 
     private final GrainRepository repository;
+    private final S3FileService s3FileService;
 
-    public GrainServiceImpl(GrainRepository repository) {
+    public GrainServiceImpl(GrainRepository repository, S3FileService s3FileService) {
         this.repository = repository;
+        this.s3FileService = s3FileService;
     }
 
     @Override
@@ -53,6 +56,14 @@ public class GrainServiceImpl implements GrainService {
     }
 
     private GrainResponse mapToResponse(Grain g) {
+
+        String imageUrl = g.getImageKey() != null
+                ? s3FileService.generatePresignedUrl(g.getImageKey())
+                : null;
+
+        String videoUrl = g.getVideoKey() != null
+                ? s3FileService.generatePresignedUrl(g.getVideoKey())
+                : null;
         return GrainResponse.builder()
                 .id(g.getId())
                 .grainCategoryId(g.getGrainCategoryId())
@@ -61,6 +72,8 @@ public class GrainServiceImpl implements GrainService {
                 .pricePerKg(g.getPricePerKg())
                 .harvestSeason(g.getHarvestSeason())
                 .available(g.isAvailable())
+                .imageUrl(imageUrl)
+                .videoUrl(videoUrl)
                 .build();
     }
 }
