@@ -1,10 +1,12 @@
 package com.farm2home.order_service.service.impl;
 
 import com.farm2home.order_service.dto.CreateOrderRequest;
+import com.farm2home.order_service.dto.OrderCreatedEvent;
 import com.farm2home.order_service.dto.OrderResponse;
 import com.farm2home.order_service.entity.Order;
 import com.farm2home.order_service.entity.OrderStatus;
 import com.farm2home.order_service.repository.OrderRepository;
+import com.farm2home.order_service.service.OrderEventPublisher;
 import com.farm2home.order_service.service.OrderService;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +16,11 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository repository;
+    private final OrderEventPublisher eventPublisher;
 
-    public OrderServiceImpl(OrderRepository repository) {
+    public OrderServiceImpl(OrderRepository repository, OrderEventPublisher eventPublisher) {
         this.repository = repository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -33,6 +37,16 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         Order saved = repository.save(order);
+
+        eventPublisher.publishOrderCreated(
+                OrderCreatedEvent.builder()
+                        .orderId(saved.getId())
+                        .customerUserId(saved.getCustomerUserId())
+                        .farmerUserId(saved.getFarmerUserId())
+                        .totalAmount(saved.getTotalAmount())
+                        .build()
+        );
+
         return mapToResponse(saved);
     }
 
